@@ -1,4 +1,4 @@
-import { PageEngine } from "../../src/engine";
+import { PageEngine } from "../../src";
 import { Page } from "../../src/protocol";
 
 const page = {

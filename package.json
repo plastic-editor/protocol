@@ -1,5 +1,8 @@
 {
   "name": "@plastic-editor/protocol",
+  "files": [
+    "lib"
+  ],
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "rm -rf lib",
