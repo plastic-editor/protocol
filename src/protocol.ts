@@ -16,3 +16,7 @@ export type Block = {
   pageId: string;
   references: string[]; // page id array
 };
+
+export interface Operator {
+  getShallowBlockById(page: Page, blockId: string): ShallowBlock;
+}
