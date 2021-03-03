@@ -122,10 +122,16 @@ export class PageEngine {
    * - d
    */
   backward(pos: BlockPosition) {
-    const [parent, parentPos] = this.accessParent(pos);
-    const removed = this.remove(pos);
-    const [ grandParent ] = this.accessParent(parentPos)
-    grandParent.children.splice(parentPos[parentPos.length - 1] + 1, 0, removed)
+    if (pos.length > 1) {
+      const [parent, parentPos] = this.accessParent(pos);
+      const removed = this.remove(pos);
+      const [grandParent] = this.accessParent(parentPos);
+      grandParent.children.splice(
+        parentPos[parentPos.length - 1] + 1,
+        0,
+        removed
+      );
+    }
   }
 
   stringify() {
