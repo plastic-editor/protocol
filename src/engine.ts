@@ -1,6 +1,6 @@
 import { Block, Page, ShallowBlock } from "./protocol";
 import { nanoid } from "nanoid";
-import { cloneDeep } from "lodash";
+import cloneDeep from "lodash.clonedeep";
 
 export type BlockPosition = number[];
 
@@ -42,6 +42,24 @@ export class PageEngine {
     return [this.access(parentPos), parentPos] as [ShallowBlock, BlockPosition];
   }
 
+  /**
+   *
+   * - a
+   * - b
+   *  - d
+   *  - e
+   * - c
+   *
+   * prepedBlockAt `e` will become
+   *
+   * - a
+   * - b
+   *  - d
+   *  - newF
+   *  - e
+   * - c
+   *
+   */
   prependBlockAt(pos: BlockPosition, block?: ShallowBlock) {
     const blockToPrepend = block ? block : this.makeNewBlock().shallow;
 
@@ -53,6 +71,24 @@ export class PageEngine {
     };
   }
 
+  /**
+   *
+   * - a
+   * - b
+   *  - d
+   *  - e
+   * - c
+   *
+   * appendBlockAt `e` will become
+   *
+   * - a
+   * - b
+   *  - d
+   *  - e
+   *  - newF
+   * - c
+   *
+   */
   apendBlockAt(pos: BlockPosition, block?: ShallowBlock) {
     const blockToPrepend = block ? block : this.makeNewBlock().shallow;
 
@@ -70,19 +106,28 @@ export class PageEngine {
     return removed[0];
   }
 
+  /**
+   * - a
+   * - b
+   * - c
+   *
+   * forwared `b` will become
+   *
+   * - a
+   *  - b
+   *  - c
+   *
+   *  or
+   *
+   *  * - a
+   *  - b
+   *  - c
+   *
+   * forwared `b` will do nothing
+   *
+   */
   forward(pos: BlockPosition) {
     if (pos[pos.length - 1] !== 0) {
-      /**
-       * - a
-       * - b
-       * - c
-       *
-       * forwared `b` will become
-       *
-       * - a
-       *  - b
-       *  - c
-       */
       const brotherPos = [
         ...[...pos].splice(0, pos.length - 1),
         pos[pos.length - 1] - 1,
@@ -94,15 +139,6 @@ export class PageEngine {
       // append to brother
       const brother = this.access(brotherPos);
       brother.children.push(removed);
-    } else {
-      /**
-       * - a
-       *  - b
-       *  - c
-       *
-       * forwared `b` will do nothing
-       *
-       */
     }
   }
 
@@ -137,11 +173,4 @@ export class PageEngine {
   stringify() {
     return JSON.stringify(this.page, null, 2);
   }
-
-  // async end() {
-  //   const newPage = finishDraft(this.pageDraft);
-  //   // this.page = newPage
-  //   // this.pageDraft = createDraft(newPage)
-  //   return newPage;
-  // }
 }

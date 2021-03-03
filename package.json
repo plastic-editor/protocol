@@ -1,5 +1,8 @@
 {
+  "name": "@plastic-editor/protocol",
   "scripts": {
+    "build": "npm run clean && tsc",
+    "clean": "rm -rf lib",
     "test": "jest"
   },
   "devDependencies": {
@@ -9,8 +12,7 @@
     "typescript": "^4.2.2"
   },
   "dependencies": {
-    "immer": "^8.0.1",
-    "lodash": "^4.17.21",
+    "lodash.clonedeep": "^4.5.0",
     "nanoid": "^3.1.20"
   }
 }
