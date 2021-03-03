@@ -4,6 +4,7 @@
   "files": [
     "lib"
   ],
+  "main": "lib/index.js",
   "scripts": {
     "build": "npm run clean && tsc",
     "clean": "rm -rf lib",
