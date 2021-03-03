@@ -43,5 +43,5 @@ test("access", () => {
 test("accessParent", () => {
   const pageEngine = new PageEngine(page);
 
-  expect(pageEngine.accessParent([1, 1]).id).toBe(page.children[1].id);
+  expect(pageEngine.accessParent([1, 1])[0].id).toBe(page.children[1].id);
 });

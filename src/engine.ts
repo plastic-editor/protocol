@@ -38,14 +38,14 @@ export class PageEngine {
   }
 
   accessParent(pos: BlockPosition) {
-    const parentPos = pos.slice(0, pos.length - 1);
-    return this.access(parentPos)
+    const parentPos = [...pos].slice(0, pos.length - 1);
+    return [this.access(parentPos), parentPos] as [ShallowBlock, BlockPosition];
   }
 
   prependBlockAt(pos: BlockPosition, block?: ShallowBlock) {
     const blockToPrepend = block ? block : this.makeNewBlock().shallow;
 
-    const parent = this.accessParent(pos)
+    const [parent] = this.accessParent(pos);
     parent.children.splice(pos[pos.length - 1], 0, blockToPrepend);
 
     return {
@@ -56,12 +56,18 @@ export class PageEngine {
   apendBlockAt(pos: BlockPosition, block?: ShallowBlock) {
     const blockToPrepend = block ? block : this.makeNewBlock().shallow;
 
-    const parent = this.accessParent(pos)
+    const [parent] = this.accessParent(pos);
     parent.children.splice(pos[pos.length - 1] + 1, 0, blockToPrepend);
 
     return {
       block: blockToPrepend,
     };
+  }
+
+  remove(pos: BlockPosition) {
+    const [parent] = this.accessParent(pos);
+    const removed = parent.children.splice(pos[pos.length - 1], 1);
+    return removed[0];
   }
 
   forward(pos: BlockPosition) {
@@ -83,12 +89,11 @@ export class PageEngine {
       ];
 
       // remove current
-      const parent = this.accessParent(pos);
-      const removed = parent.children.splice(pos[pos.length - 1], 1);
+      const removed = this.remove(pos);
 
       // append to brother
-      const brother = this.access(brotherPos)
-      brother.children.push(removed[0])
+      const brother = this.access(brotherPos);
+      brother.children.push(removed);
     } else {
       /**
        * - a
@@ -99,6 +104,28 @@ export class PageEngine {
        *
        */
     }
+  }
+
+  /**
+   * - a
+   * - b
+   *  - f
+   *  - c
+   * - d
+   *
+   * backward `c` will become
+   *
+   * - a
+   * - b
+   *  - f
+   * - c
+   * - d
+   */
+  backward(pos: BlockPosition) {
+    const [parent, parentPos] = this.accessParent(pos);
+    const removed = this.remove(pos);
+    const [ grandParent ] = this.accessParent(parentPos)
+    grandParent.children.splice(parentPos[parentPos.length - 1] + 1, 0, removed)
   }
 
   stringify() {
