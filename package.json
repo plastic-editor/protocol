@@ -1,5 +1,6 @@
 {
   "name": "@plastic-editor/protocol",
+  "version": "0.0.0",
   "files": [
     "lib"
   ],
